@@ -1,0 +1,34 @@
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.format.TextStyle;
+import java.util.Locale;
+
+public class ShowCalendar {
+    public static void main(String[] args) {
+
+        int year = 2026;
+        int month = 3; 
+
+        YearMonth ym = YearMonth.of(year, month);
+        LocalDate firstOfMonth = ym.atDay(1);
+        
+        String monthName = ym.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
+        int startDay = firstOfMonth.getDayOfWeek().getValue(); 
+        int daysInMonth = ym.lengthOfMonth();
+
+        System.out.println("    " + monthName + " " + year);
+        System.out.println("Mon Tue Wed Thu Fri Sat Sun");
+
+        for (int i = 1; i < startDay; i++) {
+            System.out.print("    ");
+        }
+        for (int day = 1; day <= daysInMonth; day++) {
+            System.out.printf("%3d ", day);
+    
+            if ((day + startDay - 1) % 7 == 0) {
+                System.out.println();
+            }
+        }
+        System.out.println();
+    }
+}
