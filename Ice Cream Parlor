@@ -1,0 +1,68 @@
+import java.io.*;
+import java.math.*;
+import java.security.*;
+import java.text.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.function.*;
+import java.util.regex.*;
+import java.util.stream.*;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+
+class Result {
+
+    /*
+     * Complete the 'icecreamParlor' function below.
+     *
+     * The function is expected to return an INTEGER_ARRAY.
+     * The function accepts following parameters:
+     *  1. INTEGER m
+     *  2. INTEGER_ARRAY arr
+     */
+
+    public static List<Integer> icecreamParlor(int m, List<Integer> arr) {
+        // Write your code here
+        Map<Integer, Integer> map = new HashMap<>();
+        List<Integer> result = new ArrayList<>();
+        
+        for (int i = 0; i < arr.size(); i++) {
+            int currentCost = arr.get(i);
+            int targetCost = m - currentCost;
+            
+            if (map.containsKey(targetCost)) {
+                result.add(map.get(targetCost)); 
+                result.add(i + 1);               
+                break;
+            }
+            
+            map.put(currentCost, i + 1);
+        }
+        
+        return result;
+    }
+
+}
+
+public class Solution {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        
+        if (!sc.hasNextInt()) return;
+        int t = sc.nextInt(); 
+        
+        for (int i = 0; i < t; i++) {
+            int m = sc.nextInt(); 
+            int n = sc.nextInt(); 
+            
+            List<Integer> arr = new ArrayList<>();
+            for (int j = 0; j < n; j++) {
+                arr.add(sc.nextInt());
+            }
+            
+            List<Integer> result = Result.icecreamParlor(m, arr);
+            System.out.println(result.get(0) + " " + result.get(1));
+        }
+        sc.close();
+    }
+}
