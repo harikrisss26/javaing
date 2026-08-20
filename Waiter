@@ -1,0 +1,116 @@
+import java.io.*;
+import java.math.*;
+import java.security.*;
+import java.text.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.regex.*;
+
+class Result {
+
+    // Helper method placed inside the Result class
+    private static List<Integer> generatePrimes(int q) {
+        List<Integer> primes = new ArrayList<>();
+        int number = 2;
+        while (primes.size() < q) {
+            boolean isPrime = true;
+            for (int p : primes) {
+                if (p * p > number) break;
+                if (number % p == 0) {
+                    isPrime = false;
+                    break;
+                }
+            }
+            if (isPrime) {
+                primes.add(number);
+            }
+            number++;
+        }
+        return primes;
+    }
+
+    /*
+     * Complete the 'waiter' function below.
+     *
+     * The function is expected to return an INTEGER_ARRAY.
+     * The function accepts following parameters:
+     *  1. INTEGER_ARRAY number
+     *  2. INTEGER q
+     */
+    public static List<Integer> waiter(List<Integer> number, int q) {
+        List<Integer> answers = new ArrayList<>();
+        List<Integer> primes = generatePrimes(q);
+        
+        Stack<Integer> currentA = new Stack<>();
+        for (int num : number) {
+            currentA.push(num);
+        }
+
+        for (int i = 0; i < q; i++) {
+            int currentPrime = primes.get(i);
+            Stack<Integer> nextA = new Stack<>();
+            Stack<Integer> pileB = new Stack<>();
+
+            while (!currentA.isEmpty()) {
+                int plate = currentA.pop();
+                if (plate % currentPrime == 0) {
+                    pileB.push(plate);
+                } else {
+                    nextA.push(plate);
+                }
+            }
+
+            while (!pileB.isEmpty()) {
+                answers.add(pileB.pop());
+            }
+
+            currentA = nextA;
+        }
+
+        while (!currentA.isEmpty()) {
+            answers.add(currentA.pop());
+        }
+
+        return answers;
+    }
+
+}
+
+public class Solution {
+    public static void main(String[] args) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        
+        String outputPath = System.getenv("OUTPUT_PATH");
+        BufferedWriter bufferedWriter = new BufferedWriter(outputPath != null ? 
+            new FileWriter(outputPath) : new OutputStreamWriter(System.out));
+
+        String[] firstMultipleInput = bufferedReader.readLine().replaceAll("\\s+$", "").split(" ");
+
+        int n = Integer.parseInt(firstMultipleInput[0]);
+        int q = Integer.parseInt(firstMultipleInput[1]);
+
+        String[] numberTemp = bufferedReader.readLine().replaceAll("\\s+$", "").split(" ");
+
+        List<Integer> number = new ArrayList<>();
+
+        for (int i = 0; i < n; i++) {
+            int numberItem = Integer.parseInt(numberTemp[i]);
+            number.add(numberItem);
+        }
+
+        List<Integer> result = Result.waiter(number, q);
+
+        for (int i = 0; i < result.size(); i++) {
+            bufferedWriter.write(String.valueOf(result.get(i)));
+
+            if (i != result.size() - 1) {
+                bufferedWriter.write("\n");
+            }
+        }
+
+        bufferedWriter.newLine();
+
+        bufferedReader.close();
+        bufferedWriter.close();
+    }
+}
