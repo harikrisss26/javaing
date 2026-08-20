@@ -1,0 +1,71 @@
+import java.io.*;
+import java.math.*;
+import java.security.*;
+import java.text.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.regex.*;
+
+class Result {
+
+    /*
+     * Complete the 'andXorOr' function below.
+     *
+     * The function is expected to return an INTEGER.
+     * The function accepts INTEGER_ARRAY a as parameter.
+     */
+
+    public static int andXorOr(List<Integer> a) {
+    int maxVal = 0;
+        Stack<Integer> stack = new Stack<>();
+
+        for (int num : a) {
+            while (!stack.isEmpty()) {
+                int top = stack.peek();
+                // Calculate M1 XOR M2
+                int currentXor = num ^ top;
+                if (currentXor > maxVal) {
+                    maxVal = currentXor;
+                }
+
+                // Maintain a monotonic increasing stack
+                if (num < top) {
+                    stack.pop();
+                } else {
+                    break;
+                }
+            }
+            stack.push(num);
+        }
+
+        return maxVal;
+    }
+
+}
+
+
+public class Solution {
+    public static void main(String[] args) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
+
+        int aCount = Integer.parseInt(bufferedReader.readLine().trim());
+
+        String[] aTemp = bufferedReader.readLine().replaceAll("\\s+$", "").split(" ");
+
+        List<Integer> a = new ArrayList<>();
+
+        for (int i = 0; i < aCount; i++) {
+            int aItem = Integer.parseInt(aTemp[i]);
+            a.add(aItem);
+        }
+
+        int result = Result.andXorOr(a);
+
+        bufferedWriter.write(String.valueOf(result));
+        bufferedWriter.newLine();
+
+        bufferedReader.close();
+        bufferedWriter.close();
+    }
+}
