@@ -1,0 +1,66 @@
+import java.io.*;
+import java.math.*;
+import java.security.*;
+import java.text.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.regex.*;
+
+class Result {
+
+    // Precompute array to store minimum moves for all numbers up to 1,000,000
+    private static final int MAX = 1000000;
+    private static final int[] moves = new int[MAX + 1];
+
+    static {
+        // Initialize and compute the minimum moves using a forward DP approach
+        for (int i = 1; i <= MAX; i++) {
+            if (moves[i] == 0 || moves[i] > moves[i - 1] + 1) {
+                moves[i] = moves[i - 1] + 1;
+            }
+            
+            // For any factors j <= i, the max(i, j) is i.
+            // Therefore, we can transition from i * j down to i in 1 move.
+            for (int j = 2; j <= i && i * j <= MAX; j++) {
+                if (moves[i * j] == 0 || moves[i * j] > moves[i] + 1) {
+                    moves[i * j] = moves[i] + 1;
+                }
+            }
+        }
+    }
+
+    /*
+     * Complete the 'downToZero' function below.
+     *
+     * The function is expected to return an INTEGER.
+     * The function accepts INTEGER n as parameter.
+     */
+    public static int downToZero(int n) {
+        return moves[n];
+    }
+
+}
+
+public class Solution {
+    public static void main(String[] args) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        
+        String outputPath = System.getenv("OUTPUT_PATH");
+        BufferedWriter bufferedWriter = new BufferedWriter(outputPath != null ? 
+            new FileWriter(outputPath) : new OutputStreamWriter(System.out));
+
+        int q = Integer.parseInt(bufferedReader.readLine().trim());
+
+        for (int qItr = 0; qItr < q; qItr++) {
+            int n = Integer.parseInt(bufferedReader.readLine().trim());
+
+            int result = Result.downToZero(n);
+
+            bufferedWriter.write(String.valueOf(result));
+            bufferedWriter.newLine();
+        }
+
+        bufferedReader.close();
+        bufferedWriter.close();
+    }
+}
